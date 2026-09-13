@@ -1,0 +1,40 @@
+name: Continuous Integration Pipeline for NodeJS Application.
+
+on:
+  pull_request
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./codebase/rdicidr-0.1.0
+
+    strategy:
+      matrix:
+        node-version: [ '15.5.1' ]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: './codebase/rdicidr-0.1.0/package-lock.json'
+
+      - name: Application dependencies installation
+        run: npm ci
+
+      - name: Run lint over the project
+        run: npm run lint
+
+      - name: Run test on application
+        run: CI=true ; npm run test
+
+      - name: Build web application static files
+        run: npm run build
