@@ -6,6 +6,7 @@ on:
 
 permissions:
   id-token: write
+  contents: read
 
 env:
   AWS_REGION: <region>
@@ -43,5 +44,5 @@ jobs:
         REPOSITORY: ${{ env.ECR_REPO }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG condebase/rdicidr-0.1.0/.
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG codebase/rdicidr-0.1.0/.
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
