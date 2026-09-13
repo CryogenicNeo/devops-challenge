@@ -1,21 +1,26 @@
-FROM node:15 as builder
+# Docker build 1st stage
 
-WORKDIR
+FROM docker.io/node:15.5.1-alpine3.12@sha256:5f693a289930c5a1f690458d35259a882546007d776ae521a96e4140aebfdccd as builder
 
-COPY
+WORKDIR /src
 
-RUN 
+COPY ./package.json ./package-lock.json .
+COPY ./public/ public/
+COPY ./src/ src/
 
-COPY
+RUN npm ci
+RUN npm run build
 
-RUN 
+# Docker build 2nd stage
 
-FROM
+FROM docker.io/nginx:stable-alpine@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c
 
-WORKDIR
+WORKDIR /app
 
-COPY
+COPY --from=builder /src/build/ .
 
-RUN 
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-ENTRYPOINT 
+EXPOSE 80
+
+CMD [ "/usr/sbin/nginx", "-g", "daemon off;" ]
